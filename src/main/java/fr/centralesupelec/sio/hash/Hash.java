@@ -9,6 +9,11 @@ import java.io.ObjectOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
+/**
+ * This class defines a method to hash a password with PBKDF2SHA512.
+ */
+
+//Unfortunately I couldn't make the hashing work
 public class Hash {
 
     public static byte[] hashPassword( final char[] password, final byte[] salt, final int iterations, final int keyLength ) {

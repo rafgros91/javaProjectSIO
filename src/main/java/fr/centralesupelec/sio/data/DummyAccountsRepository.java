@@ -2,6 +2,7 @@ package fr.centralesupelec.sio.data;
 
 import fr.centralesupelec.sio.model.Account;
 
+import java.io.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -18,7 +19,25 @@ public class DummyAccountsRepository extends AccountsRepository {
         // Define a single account
         Account a1 = new Account();
         a1.setUsername("admin@ecp.sio.fr");
-        a1.setPasswordHash("password"); // TODO: Hash passwords (Implementation to finish)
+
+        // My idea to use hashed password but I could never make it work
+        //FileReader input = null;
+        //BufferedReader br = null;
+        //try {
+        //    input = new FileReader("hashedPassword");
+        //} catch (FileNotFoundException e) {
+        //    e.printStackTrace();
+        //}
+        //br = new BufferedReader(input);
+        //String hashPass = null;
+        //try {
+        //    hashPass = br.readLine();
+        //} catch (IOException e) {
+        //    e.printStackTrace();
+        //}
+
+        // If hash password was working, I would set Password Hash to hashPass
+        a1.setPasswordHash("password");
         // Warning: the list below will be immutable (be the contained entities can be modified)
         mAccounts = Collections.singletonList(a1);
     }

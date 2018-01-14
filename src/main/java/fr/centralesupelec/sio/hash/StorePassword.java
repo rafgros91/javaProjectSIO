@@ -6,6 +6,11 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.OutputStream;
 
+/**
+ * A simple method to write the hashed password and the salt to distinct files.
+ */
+
+//Unfortunately I couldn't make the hashing work
 public class StorePassword {
 
     public static void main(String[] args) {
@@ -14,32 +19,25 @@ public class StorePassword {
         byte b2 = 101;
         byte b3 = 111;
         byte[] salt = {b1, b2, b3};
-        byte[] bytes = Hash.hashPassword("password".toCharArray(), salt, 15, 256);
-        File file = new File("./hashedPassword.txt");
+        File saltFile = new File("salt");
+        byte[] hashedPassword = Hash.hashPassword("password".toCharArray(), salt, 15, 256);
+        File hashPassFile = new File("hashedPassword");
 
         try {
 
-            OutputStream os = new FileOutputStream(file);
-            os.write(bytes);
-            System.out.println("Write bytes to file.");
+            OutputStream os1 = new FileOutputStream(hashPassFile);
+            os1.write(hashedPassword);
+            System.out.println("Write hashed password to file.");
+            os1.close();
 
-            //printContent(file);
-            //os.close();
+            OutputStream os2 = new FileOutputStream(saltFile);
+            os2.write(hashedPassword);
+            System.out.println("Write salt to file");
+            os2.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void printContent(File file) throws Exception {
-        //System.out.println("Print File Content");
-        BufferedReader br = new BufferedReader(new FileReader(file));
-
-        String line = null;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
-        }
-
-        br.close();
     }
 
 }

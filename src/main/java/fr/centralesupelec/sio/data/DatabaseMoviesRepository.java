@@ -46,28 +46,22 @@ class DatabaseMoviesRepository extends MoviesRepository {
     }
 
     @Override
-    public Movie getMovie(String title) {
-        throw new UnsupportedOperationException("Not implemented!");
-    }
-
-    @Override
     public List<Movie> getMoviesByTitlePart(String title) {
         throw new UnsupportedOperationException("Not implemented!");
     }
 
     @Override
-    public List<Movie> getMoviesByGenre(String genre) {
-        throw new UnsupportedOperationException("Not implemented!");
-    }
-
-
-    @Override
-    public List<Movie> getMoviesByDirector(String director) {
+    public List<Movie> getMoviesByGenres(String listOfGenres) {
         throw new UnsupportedOperationException("Not implemented!");
     }
 
     @Override
-    public List<Movie> getMoviesByActor(String actor) {
+    public List<Movie> getMoviesByDirectors(String listOfDirectors) {
+        throw new UnsupportedOperationException("Not implemented!");
+    }
+
+    @Override
+    public List<Movie> getMoviesByActors(String listOfActors) {
         throw new UnsupportedOperationException("Not implemented!");
     }
 

@@ -26,7 +26,7 @@ public class DirectorsServlet extends HttpServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         // Get directors from the repository.
-        //Parameters
+        //Pagination parameters
         String limitParameter = req.getParameter("limit");
         String offsetParameter = req.getParameter("offset");
         int limit;
@@ -50,9 +50,11 @@ public class DirectorsServlet extends HttpServlet{
 
         // Get a list of all the directors in the movies
         List<String> directors = MoviesRepository.getInstance().getDirectors();
-        // Cast to a TreeSet to obtain an ordered list of unique elements
+
+        // Cast to a TreeSet to obtain an ordered list of unique elements and apply pagination parameters
         Set<String> uniqueDirectors = new TreeSet<>(directors);
-        uniqueDirectors = uniqueDirectors.stream().limit(limit).skip(offset).collect(Collectors.toSet());
+        uniqueDirectors = uniqueDirectors.stream().limit(limit).skip(offset)
+                .collect(Collectors.toCollection(TreeSet::new));
 
         // Write to the response.
         ResponseHelper.writeJsonResponse(resp, uniqueDirectors);

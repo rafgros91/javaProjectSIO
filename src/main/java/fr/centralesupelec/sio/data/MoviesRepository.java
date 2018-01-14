@@ -61,15 +61,13 @@ public abstract class MoviesRepository {
     // - throw an exception, such as java.util.NoSuchElementException.
     public abstract Movie getMovie(long id);
 
-    public abstract Movie getMovie(String title);
-
     public abstract List<Movie> getMoviesByTitlePart(String title);
 
-    public abstract List<Movie> getMoviesByGenre(String genre);
+    public abstract List<Movie> getMoviesByGenres(String listOfGenres);
 
-    public abstract List<Movie> getMoviesByDirector(String director);
+    public abstract List<Movie> getMoviesByDirectors(String listOfDirectors);
 
-    public abstract List<Movie> getMoviesByActor(String actor);
+    public abstract List<Movie> getMoviesByActors(String listOfActors);
 
     public abstract List<Movie> getMoviesFilteredByParameters(String title, String genre, String director,
                                                               String actor, int limit, int offset);

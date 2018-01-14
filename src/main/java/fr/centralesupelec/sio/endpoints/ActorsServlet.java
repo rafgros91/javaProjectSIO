@@ -25,7 +25,7 @@ public class ActorsServlet extends HttpServlet{
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         // Get actors from the repository.
-        //Parameters
+        //Pagination parameters
         String limitParameter = req.getParameter("limit");
         String offsetParameter = req.getParameter("offset");
         int limit;
@@ -50,9 +50,10 @@ public class ActorsServlet extends HttpServlet{
         // Get a list of all the actors in the movies
         List<String> actors = MoviesRepository.getInstance().getActors();
 
-        // Cast to a TreeSet to obtain an ordered list of unique elements
+        // Cast to a TreeSet to obtain an ordered list of unique elements and apply pagination parameters
         Set<String> uniqueActors = new TreeSet<>(actors);
-        uniqueActors = uniqueActors.stream().limit(limit).skip(offset).collect(Collectors.toSet());
+        uniqueActors = uniqueActors.stream().limit(limit).skip(offset)
+                .collect(Collectors.toCollection(TreeSet::new));
 
         // Write to the response.
         ResponseHelper.writeJsonResponse(resp, uniqueActors);

@@ -37,6 +37,7 @@ public class Movie {
     public void setGenres(String genres) { this.genres.add(genres); }
 
     public List<String> getDirectors() { return directors; }
+
     public void setDirectors(String director) {
         Person person = new Director();
         person.setName(director);

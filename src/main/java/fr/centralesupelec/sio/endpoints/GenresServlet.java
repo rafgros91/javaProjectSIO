@@ -51,9 +51,11 @@ public class GenresServlet extends HttpServlet {
 
         // Get a list of all the directors of the movies
         List<String> genres = MoviesRepository.getInstance().getGenres();
-        // Cast to a TreeSet to obtain an ordered list of unique elements
+
+        // Cast to a TreeSet to obtain an ordered list of unique elements and apply pagination parameters
         Set<String> uniqueGenres = new TreeSet<>(genres);
-        uniqueGenres = uniqueGenres.stream().limit(limit).skip(offset).collect(Collectors.toSet());
+        uniqueGenres = uniqueGenres.stream().limit(limit).skip(offset)
+                .collect(Collectors.toCollection(TreeSet::new));
 
         // Write to the response.
         ResponseHelper.writeJsonResponse(resp, uniqueGenres);

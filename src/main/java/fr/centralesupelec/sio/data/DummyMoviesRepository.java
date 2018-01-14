@@ -235,17 +235,7 @@ class DummyMoviesRepository extends MoviesRepository {
                 .orElse(null);
     }
 
-    // A method that returns a movie from its title.
-    @Override
-    public Movie getMovie(String title) {
-        return mMovies.parallelStream()
-                .filter(movie -> movie.getTitle().equalsIgnoreCase(title))
-                .findFirst()
-                .orElse(null);
-    }
-
-    // Getters used for filtering search with parameter (Need to update to take multiple
-    // genres, directors or actors.
+    // Getters used for filtering search with parameters.
 
     // A method that returns a list of movies with their title containing a part of title (case insensitive).
     @Override
@@ -259,60 +249,69 @@ class DummyMoviesRepository extends MoviesRepository {
         return moviesByTitlePart;
     }
 
-    // A method that returns a list of movies with one of their genres matching a genre (case insensitive).
+    // A method that returns a list of movies containing the genres entered as argument,
+    // the search is case insensitive and the different genres have to be separated by commas.
     @Override
-    public List<Movie> getMoviesByGenre(String genre) {
-        List <Movie> moviesByGenre = new ArrayList<>();
-        for (Movie m : mMovies) {
-            for (String movieGenre : m.getGenres()) {
-                if (genre.equalsIgnoreCase(movieGenre)) {
-                    moviesByGenre.add(m);
-                }
-            }
+    public List<Movie> getMoviesByGenres(String listOfGenres) {
+        listOfGenres = listOfGenres.toUpperCase();
+        String[] separatedGenres = listOfGenres.split(",");
+        List<String> listOfTheGenres = Arrays.asList(separatedGenres);
+        List<Movie> moviesWithGenres = mMovies;
+        for (String oneGenre : listOfTheGenres) {
+            moviesWithGenres = moviesWithGenres.stream()
+                    .filter(movie -> movie.getGenres().contains(oneGenre))
+                    .collect(Collectors.toList());
         }
-        return moviesByGenre;
+        return moviesWithGenres;
     }
 
-    // A method that returns a list of movies with one of their directors matching a director (case insensitive).
+    // A method that returns a list of movies containing the directors entered as argument,
+    // the search is case insensitive and the different directors have to be separated by commas.
     @Override
-    public List<Movie> getMoviesByDirector(String director) {
-        List<Movie> moviesByDirector = new ArrayList<>();
-        for (Movie m : mMovies) {
-            for (String movieDirector : m.getDirectors()) {
-                if (director.equalsIgnoreCase(movieDirector)) {
-                    moviesByDirector.add(m);
-                }
-            }
+    public List<Movie> getMoviesByDirectors(String listOfDirectors) {
+        listOfDirectors = listOfDirectors.toLowerCase();
+        String[] separatedDirectors = listOfDirectors.split(",");
+        List<String> listOfTheDirectors = Arrays.asList(separatedDirectors);
+        List<Movie> moviesByDirectors = mMovies;
+        for (String oneDirector : listOfTheDirectors) {
+            moviesByDirectors = moviesByDirectors.stream()
+                    .filter(movie -> movie.getDirectors()
+                            .stream().map(String::toLowerCase).collect(Collectors.toList())
+                            .contains(oneDirector))
+                    .collect(Collectors.toList());
         }
-        return moviesByDirector;
+        return moviesByDirectors;
     }
 
-    // A method that returns a list of movies with one of their actors matching an actor (case insensitive).
+    // A method that returns a list of movies containing the actors entered as argument,
+    // the search is case insensitive and the different actors have to be separated by commas.
     @Override
-    public List<Movie> getMoviesByActor(String actor) {
-        List<Movie> moviesByActor = new ArrayList<>();
-        for (Movie m : mMovies) {
-            for (String movieActor : m.getActors()) {
-                if (actor.equalsIgnoreCase(movieActor)) {
-                    moviesByActor.add(m);
-                }
-            }
+    public List<Movie> getMoviesByActors(String listOfActors) {
+        listOfActors = listOfActors.toLowerCase();
+        String[] separatedActors = listOfActors.split(",");
+        List<String> listOfTheActors = Arrays.asList(separatedActors);
+        List<Movie> moviesByActors = mMovies;
+        for (String oneActor : listOfTheActors) {
+            moviesByActors = moviesByActors.stream()
+                    .filter(movie -> movie.getActors()
+                            .stream().map(String::toLowerCase).collect(Collectors.toList())
+                            .contains(oneActor))
+                    .collect(Collectors.toList());
         }
-        return moviesByActor;
+        return moviesByActors;
     }
 
     // A method that returns a list of movies filtered by different parameters (case insensitive).
     @Override
     public List<Movie> getMoviesFilteredByParameters(String title, String genre, String director,
                                                      String actor, int limit, int offset) {
-        // A counter to compare to the limit parameter.
-        int counter=0;
         // Initialization of empty lists.
         List<Movie> moviesByTitle;
         List<Movie> moviesByGenre;
         List<Movie> moviesByDirector;
         List<Movie> moviesByActor;
         List<Movie> moviesByParameters;
+
         // Filtering by title.
         if (title == "_") {
             moviesByTitle = mMovies;
@@ -325,28 +324,28 @@ class DummyMoviesRepository extends MoviesRepository {
             moviesByGenre = mMovies;
         }
         else {
-            moviesByGenre = getMoviesByGenre(genre);
+            moviesByGenre = getMoviesByGenres(genre);
         }
         // Filtering by director.
         if (director == "_") {
             moviesByDirector = mMovies;
         }
         else {
-            moviesByDirector = getMoviesByDirector(director);
+            moviesByDirector = getMoviesByDirectors(director);
         }
         // Filtering by actor.
         if (actor == "_") {
             moviesByActor = mMovies;
         }
         else {
-            moviesByActor = getMoviesByActor(actor);
+            moviesByActor = getMoviesByActors(actor);
         }
 
-        moviesByParameters = moviesByTitle;
-        moviesByParameters.retainAll(moviesByGenre);
-        moviesByParameters.retainAll(moviesByDirector);
-        moviesByParameters.retainAll(moviesByActor);
+        // Aggregation of the results
+        moviesByParameters = mMovies;
         return moviesByParameters.stream()
+                .filter(movie -> (moviesByTitle.contains(movie) && moviesByGenre.contains(movie)
+                && moviesByDirector.contains(movie) && moviesByActor.contains(movie)))
                 .limit(limit)
                 .skip(offset)
                 .collect(Collectors.toList());

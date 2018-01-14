@@ -2,6 +2,7 @@ package fr.centralesupelec.sio.endpoints;
 
 import fr.centralesupelec.sio.data.AccountsRepository;
 import fr.centralesupelec.sio.endpoints.utils.ResponseHelper;
+import fr.centralesupelec.sio.hash.Hash;
 import fr.centralesupelec.sio.model.Account;
 import fr.centralesupelec.sio.model.Token;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -11,6 +12,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 /**
@@ -46,6 +50,17 @@ public class AuthServlet extends HttpServlet {
         }
 
         String password = req.getParameter("password");
+
+        // My idea to use Hash Password but I could never make it work
+        //FileReader input = null;
+        //BufferedReader br = null;
+        //input = new FileReader("salt");
+        //br = new BufferedReader(input);
+        //String saltString = br.readLine();
+        //byte[] salt = saltString.getBytes();
+        //byte[] hashedPassword = Hash.hashPassword(password.toCharArray(), salt, 15, 256);
+        //String hashPass = hashedPassword.toString();
+
         if (password == null || password.isEmpty()) {
             ResponseHelper.writeError(resp, "Missing password", resp.SC_BAD_REQUEST);
             return;
@@ -58,7 +73,7 @@ public class AuthServlet extends HttpServlet {
             return;
         }
         // Check the password
-        // TODO: Better check with a hash
+        // If hash was working, I would compare it to the Hashed Password (hashPass)
         if (!account.getPasswordHash().equals(password)) {
             ResponseHelper.writeError(resp,"Invalid credentials", resp.SC_UNAUTHORIZED);
             return;
